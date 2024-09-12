@@ -18,6 +18,10 @@ return {
       require('toggleterm').setup {
         open_mapping = [[<C-\>]],
         shell = 'nu',
+        direction = 'vertical',
+        size = function()
+          return vim.o.columns * 0.4
+        end,
       }
     end,
   },
