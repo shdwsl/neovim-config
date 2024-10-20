@@ -342,6 +342,7 @@ require('lazy').setup({
         },
       },
       { 'Bilal2453/luvit-meta', lazy = true },
+      { 'b0o/schemastore.nvim' }
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -492,7 +493,14 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
         --
-
+        jsonls = {
+          settings = {
+            json = {
+              schemas = require('schemastore').json.schemas(),
+              validate = { enable = true }
+            }
+          }
+        },
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -695,6 +703,7 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'buffer' }
         },
       }
     end,
