@@ -183,7 +183,7 @@ require('lazy').setup({
   -- after the plugin has been loaded:
   --  config = function() ... end
 
-  { -- Useful plugin to show you pending keybinds.
+  {                     -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function() -- This is the function that runs, AFTER loading
@@ -231,7 +231,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -317,49 +317,6 @@ require('lazy').setup({
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
-  {
-    'seblj/roslyn.nvim',
-    config = function()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
-
-      require('roslyn').setup {
-        ---@diagnostic disable-next-line: missing-fields
-        config = {
-          capabilities = capabilities,
-          settings = {
-            ['csharp|inlay_hints'] = {
-              csharp_enable_inlay_hints_for_implicit_object_creation = true,
-              csharp_enable_inlay_hints_for_implicit_variable_types = true,
-              csharp_enable_inlay_hints_for_lambda_parameter_types = true,
-              csharp_enable_inlay_hints_for_types = true,
-              dotnet_enable_inlay_hints_for_indexer_parameters = true,
-              dotnet_enable_inlay_hints_for_literal_parameters = true,
-              dotnet_enable_inlay_hints_for_object_creation_parameters = true,
-              dotnet_enable_inlay_hints_for_other_parameters = true,
-              dotnet_enable_inlay_hints_for_parameters = true,
-              dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix = true,
-              dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name = true,
-              dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent = true,
-            },
-            ['csharp|completion'] = {
-              dotnet_provide_regex_completions = true,
-              dotnet_show_completion_items_from_unimported_namespaces = true,
-              dotnet_show_name_completion_suggestions = true,
-            },
-            ['csharp|background_analysis'] = {
-              dotnet_compiler_diagnostics_scope = 'fullSolution',
-            },
-          },
-        },
-        exe = {
-          'dotnet',
-          vim.fs.joinpath(vim.fn.stdpath 'data', 'roslyn', 'Microsoft.CodeAnalysis.LanguageServer.dll'),
-        },
-        filewatching = true,
-      }
-    end,
-  },
   { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -370,7 +327,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
@@ -564,7 +521,7 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
+        -- 'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -582,7 +539,13 @@ require('lazy').setup({
       }
     end,
   },
-
+  {
+    'seblj/roslyn.nvim',
+    ft = "cs",
+    config = function()
+      require('roslyn').setup {}
+    end
+  },
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -641,12 +604,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',

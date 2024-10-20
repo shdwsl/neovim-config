@@ -3,34 +3,34 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-  {
-    'nvim-treesitter/nvim-treesitter-context',
-    config = function()
-      require('treesitter-context').setup {
-        enable = true,
-        max_lines = 10,
-      }
-    end,
-  },
-  {
-    'akinsho/toggleterm.nvim',
-    config = function()
-      require('toggleterm').setup {
-        open_mapping = [[<C-\>]],
-        shell = 'nu',
-        direction = 'vertical',
-        size = function()
-          return vim.o.columns * 0.4
-        end,
-      }
-    end,
-  },
-  {
-    'LhKipp/nvim-nu',
-    config = function()
-      require('nu').setup {
-        use_lsp_features = false,
-      }
-    end,
-  },
+	{
+		'nvim-treesitter/nvim-treesitter-context',
+		config = function()
+			require('treesitter-context').setup {
+				enable = true,
+				max_lines = 10,
+			}
+		end,
+	},
+	{
+		'akinsho/toggleterm.nvim',
+		config = function()
+			require('toggleterm').setup {
+				open_mapping = [[<C-\>]],
+				shell = 'nu',
+				direction = 'vertical',
+				size = function()
+					return vim.o.columns * 0.4
+				end,
+			}
+		end,
+	},
+	{
+		'LhKipp/nvim-nu',
+		config = function()
+			require('nu').setup {
+				use_lsp_features = false,
+			}
+		end,
+	},
 }
