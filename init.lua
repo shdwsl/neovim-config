@@ -351,6 +351,7 @@ require('lazy').setup({
       },
       { 'Bilal2453/luvit-meta', lazy = true },
       { 'b0o/schemastore.nvim' },
+      { 'Issafalcon/lsp-overloads.nvim' },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -437,6 +438,12 @@ require('lazy').setup({
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+          --- Guard against servers without the signatureHelper capability
+          if client and client.server_capabilities.signatureHelpProvider then
+            require('lsp-overloads').setup(client, {})
+          end
+
           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
@@ -629,6 +636,8 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'hrsh7th/cmp-nvim-lsp-document-symbol',
+      'hrsh7th/cmp-nvim-lsp-signature-help',
     },
     config = function()
       -- See `:help cmp`
@@ -706,6 +715,8 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'buffer' },
+          { name = 'nvim_lsp_document_symbol' },
+          { name = 'nvim_lsp_signature_help ' },
         },
       }
     end,
@@ -817,7 +828,7 @@ require('lazy').setup({
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.roslyn',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
