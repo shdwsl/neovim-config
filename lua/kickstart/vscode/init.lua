@@ -30,6 +30,15 @@ end)
 vim.keymap.set('n', '<leader>ws', function()
   vscode.action 'workbench.action.showAllSymbols'
 end)
+vim.keymap.set('n', "<leader>tg", function ()
+  vscode.action 'workbench.view.scm'
+end)
+vim.keymap.set('n', "<leader>te", function ()
+  vscode.action 'workbench.view.explorer'
+end)
+vim.keymap.set('n', "<leader>td", function ()
+  vscode.action 'workbench.view.debug'
+end)
 -- vim.keymap.set({ 'i', 'n' }, 'C-j', function()
 --   local suggestWidgetMultipleSuggestions = vscode.eval 'return vscode.suggestWidgetMultipleSuggestions'
 --   local suggestWidgetVisible = vscode.eval 'return vscode.suggestWidgetVisible'
