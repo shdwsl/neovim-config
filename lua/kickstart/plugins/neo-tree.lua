@@ -21,8 +21,8 @@ return {
         },
       },
       filtered_items = {
-        visible = true,
         hide_gitignored = true,
+        hide_by_pattern = { '*.meta' },
       },
     },
   },
