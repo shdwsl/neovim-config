@@ -312,6 +312,7 @@ require('lazy').setup({
             '\\Temp\\*',
             '\\Obj\\*',
             '\\Logs\\*',
+            '%.meta$'
           },
         },
         pickers = {
@@ -778,9 +779,9 @@ require('lazy').setup({
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       -- vim.cmd.colorscheme 'gruvbox'
       require('onedark').setup {
-        style = 'warmer'
+        style = 'warmer',
       }
-      require('onedark').load();
+      require('onedark').load()
       vim.cmd.colorscheme = 'onedark'
       -- vim.o.background = dark
       -- You can configure highlights by doing something like:
