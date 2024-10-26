@@ -27,6 +27,7 @@ set_vscode_action('n', '<leader>tg', 'workbench.view.scm')
 set_vscode_action('n', '<leader>te', 'workbench.view.explorer')
 set_vscode_action('n', '<leader>td', 'workbench.view.debug')
 set_vscode_action('n', 'gI', 'editor.action.goToImplementation')
+set_vscode_action('n', '<leader>rn', 'editor.action.rename')
 
 -- vim.keymap.set({ 'i', 'n' }, 'C-j', function()
 --   local suggestWidgetMultipleSuggestions = vscode.eval 'return vscode.suggestWidgetMultipleSuggestions'
