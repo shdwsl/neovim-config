@@ -6,39 +6,28 @@ vim.opt.smartcase = true
 vim.opt.hlsearch = true
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('n', '<leader>ww', ':w<CR>')
 
 local vscode = require 'vscode'
-vim.keymap.set('n', '<leader>f', function()
-  vscode.action 'editor.action.formatDocument'
-end)
-vim.keymap.set('n', '<leader>ww', ':w<CR>')
-vim.keymap.set('n', '<leader><leader>', function()
-  vscode.action 'workbench.action.showAllEditors'
-end)
-vim.keymap.set('n', '<leader>ca', function()
-  vscode.action 'editor.action.quickFix'
-end)
-vim.keymap.set('n', '\\', function()
-  vscode.action 'workbench.action.toggleSidebarVisibility'
-end)
-vim.keymap.set('n', '<leader>sf', function()
-  vscode.action 'workbench.action.quickOpen'
-end)
-vim.keymap.set('n', '<leader>ds', function()
-  vscode.action 'workbench.action.gotoSymbol'
-end)
-vim.keymap.set('n', '<leader>ws', function()
-  vscode.action 'workbench.action.showAllSymbols'
-end)
-vim.keymap.set('n', "<leader>tg", function ()
-  vscode.action 'workbench.view.scm'
-end)
-vim.keymap.set('n', "<leader>te", function ()
-  vscode.action 'workbench.view.explorer'
-end)
-vim.keymap.set('n', "<leader>td", function ()
-  vscode.action 'workbench.view.debug'
-end)
+
+local set_vscode_action = function(mode, key, action)
+  vim.keymap.set(mode, key, function()
+    vscode.action(action)
+  end)
+end
+
+set_vscode_action('n', '<leader>f', 'editor.action.formatDocument')
+set_vscode_action('n', '<leader><leader>', 'workbench.action.showAllEditors')
+set_vscode_action('n', '<leader>ca', 'editor.action.quickFix')
+set_vscode_action('n', '\\', 'workbench.action.toggleSidebarVisibility')
+set_vscode_action('n', '<leader>sf', 'workbench.action.quickOpen')
+set_vscode_action('n', '<leader>ds', 'workbench.action.gotoSymbol')
+set_vscode_action('n', '<leader>ws', 'workbench.action.showAllSymbols')
+set_vscode_action('n', '<leader>tg', 'workbench.view.scm')
+set_vscode_action('n', '<leader>te', 'workbench.view.explorer')
+set_vscode_action('n', '<leader>td', 'workbench.view.debug')
+set_vscode_action('n', 'gI', 'editor.action.goToImplementation')
+
 -- vim.keymap.set({ 'i', 'n' }, 'C-j', function()
 --   local suggestWidgetMultipleSuggestions = vscode.eval 'return vscode.suggestWidgetMultipleSuggestions'
 --   local suggestWidgetVisible = vscode.eval 'return vscode.suggestWidgetVisible'
