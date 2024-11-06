@@ -890,7 +890,7 @@ else
     require 'kickstart.plugins.roslyn',
     require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
     require 'kickstart.plugins.lazygit',
-    require 'kickstart.plugins.neorg',
+    -- require 'kickstart.plugins.neorg',
     require 'kickstart.plugins.noice',
 
     -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
