@@ -773,19 +773,19 @@ else
       -- change the command in the config to whatever the name of that colorscheme is.
       --
       -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-      -- 'ellisonleao/gruvbox.nvim',
-      'navarasu/onedark.nvim',
+      'ellisonleao/gruvbox.nvim',
+      -- 'navarasu/onedark.nvim',
       priority = 1000, -- Make sure to load this before all the other start plugins.
       init = function()
         -- Load the colorscheme here.
         -- Like many other themes, this one has different styles, and you could load
         -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-        -- vim.cmd.colorscheme 'gruvbox'
-        require('onedark').setup {
-          style = 'warmer',
-        }
-        require('onedark').load()
-        vim.cmd.colorscheme = 'onedark'
+        vim.cmd.colorscheme 'gruvbox'
+        -- require('onedark').setup {
+        --   style = 'warmer',
+        -- }
+        -- require('onedark').load()
+        -- vim.cmd.colorscheme = ''
         -- vim.o.background = dark
         -- You can configure highlights by doing something like:
         vim.cmd.hi 'Comment gui=none'
@@ -889,7 +889,7 @@ else
     require 'kickstart.plugins.roslyn',
     require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
     require 'kickstart.plugins.lazygit',
-    -- require 'kickstart.plugins.neorg',
+    require 'kickstart.plugins.neorg',
     require 'kickstart.plugins.noice',
 
     -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
