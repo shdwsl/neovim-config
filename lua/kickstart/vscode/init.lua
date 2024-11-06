@@ -17,6 +17,7 @@ local set_vscode_action = function(mode, key, action)
 end
 
 set_vscode_action('n', '<leader>f', 'editor.action.formatDocument')
+set_vscode_action('v', '<leader>f', 'editor.action.formatSelection')
 set_vscode_action('n', '<leader><leader>', 'workbench.action.showAllEditors')
 set_vscode_action('n', '<leader>ca', 'editor.action.quickFix')
 set_vscode_action('n', '\\', 'workbench.action.toggleSidebarVisibility')

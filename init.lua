@@ -2,7 +2,7 @@ if vim.g.vscode then
   require 'kickstart.vscode'
 else
   vim.g.mapleader = ' '
-  vim.g.maplocalleader = ' '
+  vim.g.maplocalleader = ','
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
   vim.g.have_nerd_font = true
@@ -864,7 +864,14 @@ else
         --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
       end,
     },
-
+    {
+      'Wansmer/langmapper.nvim',
+      lazy = false,
+      priority = 1, -- High priority is needed if you will use `autoremap()`
+      config = function()
+        require('langmapper').setup {}
+      end,
+    },
     -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
     -- init.lua. If you want these files, they are in the repository, so you can just download them and
     -- place them in the correct locations.
@@ -882,6 +889,8 @@ else
     require 'kickstart.plugins.roslyn',
     require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
     require 'kickstart.plugins.lazygit',
+    -- require 'kickstart.plugins.neorg',
+    require 'kickstart.plugins.noice',
 
     -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
     --    This is the easiest way to modularize your config.
