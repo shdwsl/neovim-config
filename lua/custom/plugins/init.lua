@@ -16,11 +16,11 @@ return {
 		'akinsho/toggleterm.nvim',
 		config = function()
 			require('toggleterm').setup {
-				open_mapping = [[<C-\>]],
+				open_mapping = [[<leader>tt]],
 				shell = 'nu',
-				direction = 'vertical',
+				direction = 'horizontal',
 				size = function()
-					return vim.o.columns * 0.4
+					return vim.o.lines * 0.4
 				end,
 			}
 		end,
