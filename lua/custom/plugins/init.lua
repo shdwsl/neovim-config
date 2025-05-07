@@ -32,7 +32,13 @@ return {
     opts = {
       -- add any opts here
       -- for example
-      provider = 'openrouter',
+      provider = 'ollama',
+      ollama = {
+        endpoint = "http://192.168.31.133:11434",
+        model = "qwen2.5-coder:latest",
+        temperature = 0,
+        max_tokens = 32768,
+      },
       vendors = {
         openrouter = {
           __inherited_from = 'openai',
