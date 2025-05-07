@@ -68,14 +68,14 @@ return {
     event = 'VeryLazy',
     version = false, -- Never set this value to "*"! Never!
     opts = {
-      -- add any opts here
-      -- for example
       provider = 'ollama',
+      cursor_applying_provider = 'ollama',
+      behaviour = {
+        enable_cursor_planning_mode = true,
+      },
       ollama = {
         endpoint = "http://192.168.31.133:11434",
-        model = "qwen2.5-coder:latest",
-        temperature = 0,
-        max_tokens = 32768,
+        model = "qwen2.5-coder:7b",
       },
       vendors = {
         openrouter = {
