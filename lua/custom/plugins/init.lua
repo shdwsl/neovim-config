@@ -68,14 +68,18 @@ return {
     event = 'VeryLazy',
     version = false, -- Never set this value to "*"! Never!
     opts = {
-      provider = 'ollama',
-      cursor_applying_provider = 'ollama',
+      provider = 'openrouter',
+      -- auto_suggestions_provider = "ollama",
+      -- cursor_applying_provider = "applying",
       behaviour = {
         enable_cursor_planning_mode = true,
       },
       ollama = {
-        endpoint = "http://192.168.31.133:11434",
+        -- endpoint = "http://192.168.31.133:11434",
+        endpoint = "http://localhost:11434",
         model = "qwen2.5-coder:7b",
+        temperature = 0,
+        max_tokens = 32768,
       },
       vendors = {
         openrouter = {
@@ -88,6 +92,13 @@ return {
           -- max_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
           -- reasoning_effort = 'medium', -- low|medium|high, only used for reasoning models
         },
+        applying = {
+          api_key_name = "",
+          endpoint = "http://localhost:11434/v1",
+          model = "llama3.2:3b",
+          temperature = 0,
+          max_tokens = 32768,
+        }
       },
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
