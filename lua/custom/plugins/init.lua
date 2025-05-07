@@ -25,6 +25,44 @@ return {
       }
     end,
   },
+  -- {
+  --   "olimorris/codecompanion.nvim",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --   },
+  --   opts = {
+  --     strategies = {
+  --       chat = {
+  --         adapter = "ollama",
+  --       },
+  --       inline = {
+  --         adapter = "ollama",
+  --       },
+  --       cmd = {
+  --         adapter = "ollama"
+  --       }
+  --     },
+  --     adapters = {
+  --       ollama = function()
+  --         return require("codecompanion.adapters").extend("ollama", {
+  --           env = {
+  --             url = "http://192.168.31.133:11434"
+  --           },
+  --           schema = {
+  --             model = {
+  --               default = "qwen2.5-coder:7b"
+  --             }
+  --           }
+  --         })
+  --       end
+  --     },
+  --     opts = {
+  --       -- Set debug logging
+  --       log_level = "DEBUG",
+  --     },
+  --   },
+  -- },
   {
     'yetone/avante.nvim',
     event = 'VeryLazy',
@@ -93,13 +131,5 @@ return {
         ft = { 'markdown', 'Avante' },
       },
     },
-  },
-  -- {
-  -- 	'LhKipp/nvim-nu',
-  -- 	config = function()
-  -- 		require('nu').setup {
-  -- 			use_lsp_features = false,
-  -- 		}
-  -- 	end,
-  -- },
+  }
 }
