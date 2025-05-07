@@ -726,8 +726,9 @@ else
       require 'kickstart.plugins.lazygit',
       -- require 'kickstart.plugins.neorg',
       require 'kickstart.plugins.noice',
+      require 'custom.plugins'
 
-      { import = 'custom.plugins' },
+      -- { import = 'custom.plugins' },
     },
 
     ---@diagnostic disable-next-line: missing-fields
