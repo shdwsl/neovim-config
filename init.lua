@@ -79,7 +79,7 @@ else
   -- Diagnostic keymaps
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
   vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = 'Save' })
-  
+
   -- Configure diagnostics display
   vim.diagnostic.config({
     virtual_text = true,      -- Show diagnostic messages as virtual text
@@ -94,7 +94,7 @@ else
       prefix = "",            -- No prefix for each diagnostic line
     },
   })
-  
+
   -- Enable hover diagnostics
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
   vim.keymap.set('n', '<leader>k', vim.diagnostic.open_float, { desc = 'Show diagnostic [K]message' })
