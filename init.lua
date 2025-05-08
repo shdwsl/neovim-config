@@ -79,6 +79,25 @@ else
   -- Diagnostic keymaps
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
   vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = 'Save' })
+  
+  -- Configure diagnostics display
+  vim.diagnostic.config({
+    virtual_text = true,      -- Show diagnostic messages as virtual text
+    signs = true,             -- Show diagnostic signs in the sign column
+    underline = true,         -- Underline the text with diagnostic issues
+    update_in_insert = false, -- Don't update diagnostics in insert mode
+    severity_sort = true,     -- Sort diagnostics by severity
+    float = {
+      border = "rounded",     -- Add a border to the floating window
+      source = "always",      -- Always show the source of the diagnostic
+      header = "",            -- No header in the floating window
+      prefix = "",            -- No prefix for each diagnostic line
+    },
+  })
+  
+  -- Enable hover diagnostics
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
+  vim.keymap.set('n', '<leader>k', vim.diagnostic.open_float, { desc = 'Show diagnostic [K]message' })
 
 
   -- Keybinds to make split navigation easier.
