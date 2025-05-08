@@ -7,7 +7,7 @@ return {
     -- auto_suggestions_provider = "ollama",
     -- cursor_applying_provider = "applying",
     behaviour = {
-      enable_cursor_planning_mode = true,
+      -- enable_cursor_planning_mode = true,
     },
     ollama = {
       -- endpoint = "http://192.168.31.133:11434",
@@ -22,9 +22,9 @@ return {
         api_key_name = 'OPENROUTER_API_KEY',
         endpoint = 'https://openrouter.ai/api/v1',
         model = 'anthropic/claude-3.7-sonnet', -- your desired model (or use gpt-4o, etc.)
-        -- timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
-        -- temperature = 0,
-        -- max_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
+        timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+        temperature = 0,
+        max_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
         -- reasoning_effort = 'medium', -- low|medium|high, only used for reasoning models
       },
       applying = {
