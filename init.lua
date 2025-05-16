@@ -81,24 +81,23 @@ else
   vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = 'Save' })
 
   -- Configure diagnostics display
-  vim.diagnostic.config({
-    virtual_text = true,      -- Show diagnostic messages as virtual text
-    signs = true,             -- Show diagnostic signs in the sign column
-    underline = true,         -- Underline the text with diagnostic issues
+  vim.diagnostic.config {
+    virtual_text = true, -- Show diagnostic messages as virtual text
+    signs = true, -- Show diagnostic signs in the sign column
+    underline = true, -- Underline the text with diagnostic issues
     update_in_insert = false, -- Don't update diagnostics in insert mode
-    severity_sort = true,     -- Sort diagnostics by severity
+    severity_sort = true, -- Sort diagnostics by severity
     float = {
-      border = "rounded",     -- Add a border to the floating window
-      source = "always",      -- Always show the source of the diagnostic
-      header = "",            -- No header in the floating window
-      prefix = "",            -- No prefix for each diagnostic line
+      border = 'rounded', -- Add a border to the floating window
+      source = 'always', -- Always show the source of the diagnostic
+      header = '', -- No header in the floating window
+      prefix = '', -- No prefix for each diagnostic line
     },
-  })
+  }
 
   -- Enable hover diagnostics
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
   vim.keymap.set('n', '<leader>k', vim.diagnostic.open_float, { desc = 'Show diagnostic [K]message' })
-
 
   -- Keybinds to make split navigation easier.
   --  Use CTRL+<hjkl> to switch between windows
@@ -145,9 +144,10 @@ else
   --  To update plugins you can run
   --    :Lazy update
   --
-  require('lazy').setup({
+  require('lazy').setup(
+    {
       'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
-      {                   -- Adds git related signs to the gutter, as well as utilities for managing changes
+      { -- Adds git related signs to the gutter, as well as utilities for managing changes
         'lewis6991/gitsigns.nvim',
         opts = {
           signs = {
@@ -160,7 +160,7 @@ else
         },
       },
 
-      {                     -- Useful plugin to show you pending keybinds.
+      { -- Useful plugin to show you pending keybinds.
         'folke/which-key.nvim',
         event = 'VimEnter', -- Sets the loading event to 'VimEnter'
         config = function() -- This is the function that runs, AFTER loading
@@ -176,7 +176,7 @@ else
             { '<leader>t', group = '[T]oggle' },
             { '<leader>l', group = '[L]azy Git|Trouble' },
             { '<leader>x', group = 'Trouble' },
-            { '<leader>h', group = 'Git [H]unk',        mode = { 'n', 'v' } },
+            { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
           }
         end,
       },
@@ -233,7 +233,7 @@ else
           },
           { 'nvim-telescope/telescope-ui-select.nvim' },
 
-          { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+          { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
         },
         config = function()
           require('telescope').setup {
@@ -252,6 +252,7 @@ else
             pickers = {
               find_files = {
                 hidden = true,
+                file_ignore_patterns = { '.git/', 'node_modules' },
               },
             },
             extensions = {
@@ -270,10 +271,10 @@ else
           vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
           vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
           vim.keymap.set('n', '<leader>sf', function()
-            builtin.find_files(require('telescope.themes').get_dropdown({
+            builtin.find_files(require('telescope.themes').get_dropdown {
               winblend = 10,
-              previewer = false
-            }))
+              previewer = false,
+            })
           end, { desc = '[S]earch [F]iles' })
           vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
           vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
@@ -317,7 +318,7 @@ else
 
           -- Useful status updates for LSP.
           -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-          { 'j-hui/fidget.nvim',       opts = {} },
+          { 'j-hui/fidget.nvim', opts = {} },
 
           -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
           -- used for completion, annotations and signatures of Neovim apis
@@ -331,7 +332,7 @@ else
               },
             },
           },
-          { 'Bilal2453/luvit-meta',         lazy = true },
+          { 'Bilal2453/luvit-meta', lazy = true },
           { 'b0o/schemastore.nvim' },
           { 'Issafalcon/lsp-overloads.nvim' },
         },
@@ -745,7 +746,7 @@ else
       require 'kickstart.plugins.lazygit',
       -- require 'kickstart.plugins.neorg',
       require 'kickstart.plugins.noice',
-      require 'custom.plugins'
+      require 'custom.plugins',
 
       -- { import = 'custom.plugins' },
     },
@@ -770,7 +771,8 @@ else
           lazy = '💤 ',
         },
       },
-    })
+    }
+  )
 
   -- The line beneath this is called `modeline`. See `:help modeline`
   -- vim: ts=2 sts=2 sw=2 et
