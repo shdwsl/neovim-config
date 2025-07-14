@@ -5,7 +5,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
   },
   opts = function()
-    vim.keymap.set("n", "<leader>aa", "<cmd>CodeCompanionActions<CR>", { desc = "Code Companion Actions" })
+    vim.keymap.set("", "<leader>aa", "<cmd>CodeCompanionActions<CR>", { desc = "Code Companion Actions" })
 
     return {
       strategies = {
