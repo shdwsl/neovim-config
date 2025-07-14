@@ -10,13 +10,13 @@ return {
     return {
       strategies = {
         chat = {
-          adapter = "claude_openrouter",
+          adapter = "lmstudio",
         },
         inline = {
-          adapter = "claude_openrouter",
+          adapter = "lmstudio",
         },
         cmd = {
-          adapter = "claude_openrouter"
+          adapter = "lmstudio"
         }
       },
       adapters = {
@@ -28,6 +28,18 @@ return {
             schema = {
               model = {
                 default = "qwen2.5-coder:7b"
+              }
+            }
+          })
+        end,
+        lmstudio = function()
+          return require("codecompanion.adapters").extend("openai_compatible", {
+            env = {
+              url = "http://127.0.0.1:1234"
+            },
+            schema = {
+              model = {
+                default = "qwen/qwen3-8b"
               }
             }
           })
