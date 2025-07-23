@@ -10,28 +10,29 @@ return {
     return {
       strategies = {
         chat = {
-          adapter = "ollama",
+          adapter = "lmstudio",
         },
         inline = {
-          adapter = "ollama",
+          adapter = "lmstudio",
         },
         cmd = {
-          adapter = "ollama",
+          adapter = "lmstudio",
         }
       },
       adapters = {
-        ollama = function()
-          return require("codecompanion.adapters").extend("ollama", {
+        lmstudio = function()
+          return require 'codecompanion.adapters'.extend("openai_compatible", {
             env = {
-              url = "http://localhost:11434"
+              url = "http://localhost:1234",
             },
             schema = {
               model = {
-                default = "deepseek-r1:8b"
+                default = "qwen/qwen3-8b",
               }
             }
           })
         end,
+
         openrouter = function()
           return require 'codecompanion.adapters'.extend("openai_compatible", {
             env = {
