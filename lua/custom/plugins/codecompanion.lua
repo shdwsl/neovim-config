@@ -10,13 +10,13 @@ return {
     return {
       strategies = {
         chat = {
-          adapter = "lmstudio",
+          adapter = "openrouter",
         },
         inline = {
-          adapter = "lmstudio",
+          adapter = "openrouter",
         },
         cmd = {
-          adapter = "lmstudio",
+          adapter = "openrouter",
         }
       },
       adapters = {
