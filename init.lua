@@ -1,5 +1,5 @@
 if vim.g.vscode then
-    require 'kickstart.vscode'
+    require 'config.vscode'
 else
     vim.g.mapleader = ' '
     vim.g.maplocalleader = ','
@@ -75,7 +75,7 @@ else
 
     vim.api.nvim_create_autocmd('TextYankPost', {
         desc = 'Highlight when yanking (copying) text',
-        group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+        group = vim.api.nvim_create_augroup('nvim-config-highlight-yank', { clear = true }),
         callback = function()
             vim.highlight.on_yank()
         end,
@@ -285,7 +285,7 @@ else
                 },
                 config = function()
                     vim.api.nvim_create_autocmd('LspAttach', {
-                        group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+                        group = vim.api.nvim_create_augroup('nvim-config-lsp-attach', { clear = true }),
                         callback = function(event)
                             local map = function(keys, func, desc)
                                 vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
@@ -317,7 +317,7 @@ else
                             end
 
                             if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-                                local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight',
+                                local highlight_augroup = vim.api.nvim_create_augroup('nvim-config-lsp-highlight',
                                     { clear = false })
                                 vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
                                     buffer = event.buf,
@@ -332,10 +332,10 @@ else
                                 })
 
                                 vim.api.nvim_create_autocmd('LspDetach', {
-                                    group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+                                    group = vim.api.nvim_create_augroup('nvim-config-lsp-detach', { clear = true }),
                                     callback = function(event2)
                                         vim.lsp.buf.clear_references()
-                                        vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+                                        vim.api.nvim_clear_autocmds { group = 'nvim-config-lsp-highlight', buffer = event2.buf }
                                     end,
                                 })
                             end
@@ -562,15 +562,7 @@ else
                 end,
             },
 
-            require 'kickstart.plugins.autopairs',
-            require 'kickstart.plugins.neo-tree',
-
-            require 'kickstart.plugins.gitsigns',
-            require 'kickstart.plugins.lazygit',
-
-            require 'kickstart.plugins.noice',
-            require 'kickstart.plugins.snacks',
-            require 'custom.plugins',
+            require 'plugins',
 
         },
 
