@@ -125,6 +125,7 @@ else
                     require('which-key').setup()
 
                     require('which-key').add {
+                        { '<leader>a', group = '[A]I' },
                         { '<leader>c', group = '[C]ode' },
                         { '<leader>d', group = '[D]ocument' },
                         { '<leader>r', group = '[R]ename' },
@@ -553,15 +554,6 @@ else
                     require('nvim-treesitter').setup(opts)
                 end,
             },
-            {
-                'Wansmer/langmapper.nvim',
-                lazy = false,
-                priority = 1,
-                config = function()
-                    require('langmapper').setup {}
-                end,
-            },
-
             require 'plugins',
 
         },

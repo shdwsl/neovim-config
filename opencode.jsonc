@@ -1,0 +1,241 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Model IDs use the provider/model-id format.
+  // Current mapping follows the supplied mode table:
+  // - Kimi K2.5: architect, ask, plan, general, debug
+  // - MiniMax M2.7: code, build, explore
+  "default_agent": "plan",
+
+  "agent": {
+    "plan": {
+      "description": "Plan mode: analyze the task, break it into concrete steps, and delegate focused research to subagents before implementation.",
+      "mode": "primary",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask",
+        "task": {
+          "*": "deny",
+          "plan-*": "allow",
+          "architect-*": "allow",
+          "ask-*": "allow",
+          "explore": "allow"
+        }
+      },
+      "prompt": "You are in Plan mode. Do not edit files. Analyze the request, inspect relevant context, identify risks and dependencies, and produce a concise implementation plan. Use subagents for independent research, architecture review, or focused questions when it improves the plan."
+    },
+
+    "code": {
+      "description": "Code mode: implement scoped changes, keep edits minimal, and use subagents for review or targeted investigation.",
+      "mode": "primary",
+      "model": "kilo/minimax/minimax-m2.5",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "ask",
+        "bash": "ask",
+        "webfetch": "ask",
+        "task": {
+          "*": "deny",
+          "code-*": "allow",
+          "debug-*": "allow",
+          "architect-*": "allow",
+          "plan-*": "allow",
+          "review-*": "allow",
+          "general": "allow",
+          "explore": "allow"
+        }
+      },
+      "prompt": "You are in Code mode. Implement the requested change directly and conservatively. Follow existing project style, keep unrelated files untouched, and verify the result with the smallest useful checks. Use subagents for parallel investigation, focused implementation support, or review."
+    },
+
+    "debug": {
+      "description": "Debug mode: investigate failures, reproduce symptoms, isolate the cause, and propose or apply the smallest fix.",
+      "mode": "primary",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "ask",
+        "bash": "ask",
+        "webfetch": "ask",
+        "task": {
+          "*": "deny",
+          "debug-*": "allow",
+          "code-*": "allow",
+          "plan-*": "allow",
+          "review-*": "allow",
+          "explore": "allow"
+        }
+      },
+      "prompt": "You are in Debug mode. Reproduce or reason from the failure, gather evidence before changing code, and separate confirmed facts from hypotheses. Prefer narrow fixes and focused verification. Use subagents for log analysis, code search, or regression review."
+    },
+
+    "ask": {
+      "description": "Ask mode: answer questions, explain code, and provide guidance without modifying files.",
+      "mode": "primary",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask",
+        "task": {
+          "*": "deny",
+          "ask-*": "allow",
+          "plan-*": "allow",
+          "explore": "allow"
+        }
+      },
+      "prompt": "You are in Ask mode. Answer directly and do not edit files. Use available project context, cite file paths when relevant, and surface uncertainty clearly. Use subagents only for independent exploration or specialized explanation."
+    },
+
+    "architect": {
+      "description": "Architect mode: design architecture, evaluate tradeoffs, and coordinate specialized subagents without direct implementation.",
+      "mode": "primary",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.15,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask",
+        "task": {
+          "*": "deny",
+          "architect-*": "allow",
+          "plan-*": "allow",
+          "debug-*": "allow",
+          "review-*": "allow",
+          "explore": "allow",
+          "general": "allow"
+        }
+      },
+      "prompt": "You are in Architect mode. Design the approach, define boundaries, evaluate tradeoffs, and coordinate subagents for research, review, and risk analysis. Do not edit files; hand off implementation-ready guidance to Code mode."
+    },
+
+    "build": {
+      "description": "Build mode: implement complete tasks with full development workflow and focused verification.",
+      "mode": "primary",
+      "model": "kilo/minimax/minimax-m2.5",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "ask",
+        "bash": "ask",
+        "webfetch": "ask",
+        "task": {
+          "*": "deny",
+          "code-*": "allow",
+          "debug-*": "allow",
+          "review-*": "allow",
+          "general": "allow",
+          "explore": "allow"
+        }
+      },
+      "prompt": "You are in Build mode. Deliver implementation tasks end to end: inspect, edit, verify, and summarize. Keep changes scoped and use subagents for parallel exploration or review."
+    },
+
+    "general": {
+      "description": "General assistance for broad questions, research, and multi-step support.",
+      "mode": "subagent",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "ask",
+        "bash": "ask",
+        "webfetch": "ask"
+      },
+      "prompt": "Handle general assistance tasks that do not fit a narrower specialist. Keep findings concise and report any changes or verification clearly."
+    },
+
+    "explore": {
+      "description": "Read-only codebase exploration and context gathering.",
+      "mode": "subagent",
+      "model": "kilo/minimax/minimax-m2.5",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask"
+      },
+      "prompt": "Explore the codebase, search for relevant files or behavior, and report concise findings with file references. Do not edit files."
+    },
+
+    "plan-researcher": {
+      "description": "Researches code paths, dependencies, and constraints for planning without editing files.",
+      "mode": "subagent",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask"
+      },
+      "prompt": "Research the requested area and report concise findings with file references, constraints, and open questions. Do not edit files."
+    },
+
+    "code-implementer": {
+      "description": "Implements a narrow, well-scoped code change under the primary agent's direction.",
+      "mode": "subagent",
+      "model": "kilo/minimax/minimax-m2.5",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "ask",
+        "bash": "ask",
+        "webfetch": "ask"
+      },
+      "prompt": "Implement only the assigned change. Keep the write scope narrow, preserve unrelated edits, and report changed files plus verification."
+    },
+
+    "debug-investigator": {
+      "description": "Investigates a bug or failing behavior and reports likely root cause with evidence.",
+      "mode": "subagent",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask"
+      },
+      "prompt": "Investigate the failure and report evidence, reproduction notes, likely root cause, and the smallest plausible fix. Do not edit files."
+    },
+
+    "ask-explainer": {
+      "description": "Explains code, configuration, and behavior in a read-only way.",
+      "mode": "subagent",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.2,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask"
+      },
+      "prompt": "Explain the requested topic clearly and concretely. Prefer project-specific evidence and include file references when useful. Do not edit files."
+    },
+
+    "architect-reviewer": {
+      "description": "Reviews architecture choices, API boundaries, migration risks, and long-term maintainability.",
+      "mode": "subagent",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.15,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask"
+      },
+      "prompt": "Review the proposed architecture or design. Focus on boundaries, coupling, migration risk, operational risk, and simpler alternatives. Do not edit files."
+    },
+
+    "review-checker": {
+      "description": "Reviews changes for bugs, regressions, missing tests, and risky assumptions.",
+      "mode": "subagent",
+      "model": "kilo/moonshotai/kimi-k2.5",
+      "temperature": 0.1,
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "webfetch": "ask"
+      },
+      "prompt": "Review the relevant change like a code reviewer. Lead with concrete findings and file references. Do not edit files."
+    }
+  }
+}
