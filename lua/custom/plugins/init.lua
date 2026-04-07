@@ -5,6 +5,6 @@
 return {
   require 'custom.plugins.treesitter-context',
   require 'custom.plugins.toggleterm',
-  require 'custom.plugins.codecompanion',
+  -- require 'custom.plugins.codecompanion',
   -- require 'custom.plugins.avante'
 }
