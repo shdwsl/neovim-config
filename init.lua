@@ -7,18 +7,6 @@ else
     -- Set to true if you have a Nerd Font installed and selected in the terminal
     vim.g.have_nerd_font = true
 
-    vim.cmd.colorscheme("unokai")
-
-    vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-    vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-    vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
-
-    -- [[ Setting options ]]
-    -- See `:help vim.opt`
-    -- NOTE: You can change these options as you wish!
-    --  For more options, you can see `:help option-list`
-
-    -- Make line numbers default
     vim.opt.number = true
     -- You can also add relative line numbers, to help with jumping.
     --  Experiment for yourself to see if you like it!
@@ -152,6 +140,17 @@ else
     --
     require('lazy').setup(
         {
+            {
+                'ellisonleao/gruvbox.nvim',
+                priority = 1000,
+                config = function()
+                    require('gruvbox').setup({
+                        -- optional configuration
+                        contrast = 'hard', -- can be 'hard', 'soft' or empty string
+                    })
+                    vim.cmd.colorscheme('gruvbox')
+                end,
+            },
             'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
             {                   -- Adds git related signs to the gutter, as well as utilities for managing changes
                 'lewis6991/gitsigns.nvim',
