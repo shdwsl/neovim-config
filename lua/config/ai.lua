@@ -1,7 +1,5 @@
 local M = {}
 
-local active_provider = vim.g.ai_provider or 'claude'
-
 local providers = {
   claude = {
     label = 'Claude Code',
@@ -46,6 +44,50 @@ local providers = {
 }
 
 local provider_order = { 'claude', 'codex', 'opencode' }
+local provider_state_path = vim.fs.joinpath(vim.fn.stdpath 'data', 'ai-provider')
+
+local function read_saved_provider()
+  if vim.fn.filereadable(provider_state_path) ~= 1 then
+    return nil
+  end
+
+  local ok, lines = pcall(vim.fn.readfile, provider_state_path, '', 1)
+  if not ok or not lines[1] then
+    return nil
+  end
+
+  local name = vim.trim(lines[1])
+  if providers[name] then
+    return name
+  end
+
+  return nil
+end
+
+local function default_provider()
+  if providers[vim.g.ai_provider] then
+    return vim.g.ai_provider
+  end
+
+  return read_saved_provider() or 'claude'
+end
+
+local active_provider = default_provider()
+vim.g.ai_provider = active_provider
+
+local function save_provider(name)
+  local dir = vim.fn.fnamemodify(provider_state_path, ':h')
+  local ok, err = pcall(function()
+    vim.fn.mkdir(dir, 'p')
+    vim.fn.writefile({ name }, provider_state_path)
+  end)
+
+  if not ok then
+    return false, err
+  end
+
+  return true
+end
 
 local function notify(message, level)
   vim.notify(message, level or vim.log.levels.INFO, { title = 'AI Provider' })
@@ -181,6 +223,11 @@ function M.set_provider(name, opts)
 
   active_provider = name
   vim.g.ai_provider = name
+  local saved, err = save_provider(name)
+  if not saved then
+    notify('Failed to save provider: ' .. tostring(err), vim.log.levels.WARN)
+  end
+
   notify('Active provider: ' .. providers[name].label)
 
   if opts.open then
