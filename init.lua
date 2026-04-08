@@ -379,13 +379,15 @@ else
                     require('mason').setup {
                         registries = {
                             'github:mason-org/mason-registry',
+                            'github:Crashdummyy/mason-registry',
 
                         },
                     }
 
                     local ensure_installed = vim.tbl_keys(servers or {})
                     vim.list_extend(ensure_installed, {
-
+                        'roslyn',
+                        'stylua',
                     })
                     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
