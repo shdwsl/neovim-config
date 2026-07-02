@@ -109,14 +109,61 @@ else
 
   require('lazy').setup({
     {
-      'ellisonleao/gruvbox.nvim',
+      'catppuccin/nvim',
+      name = 'catppuccin',
       priority = 1000,
       config = function()
-        require('gruvbox').setup {
+        local function detect_background()
+          local colorfgbg = vim.env.COLORFGBG
+          if colorfgbg then
+            local bg = tonumber(colorfgbg:match('.*;(%d+)$'))
+            if bg then
+              return bg < 7 and 'dark' or 'light'
+            end
+          end
 
-          contrast = 'hard',
+          if vim.fn.has 'macunix' == 1 then
+            local appearance = vim.fn.system { 'defaults', 'read', '-g', 'AppleInterfaceStyle' }
+            if vim.v.shell_error == 0 and appearance:match 'Dark' then
+              return 'dark'
+            end
+          end
+
+          return 'light'
+        end
+
+        local function apply_theme()
+          vim.o.background = detect_background()
+          vim.cmd.colorscheme 'catppuccin'
+        end
+
+        require('catppuccin').setup {
+          background = {
+            light = 'latte',
+            dark = 'macchiato',
+          },
+          integrations = {
+            cmp = true,
+            gitsigns = true,
+            mason = true,
+            mini = true,
+            native_lsp = { enabled = true },
+            noice = true,
+            notify = true,
+            telescope = { enabled = true },
+            treesitter = true,
+            trouble = true,
+            which_key = true,
+          },
         }
-        vim.cmd.colorscheme 'gruvbox'
+
+        apply_theme()
+
+        vim.api.nvim_create_autocmd({ 'FocusGained', 'TermEnter' }, {
+          desc = 'Sync colorscheme with terminal or macOS appearance',
+          group = vim.api.nvim_create_augroup('nvim-config-sync-appearance', { clear = true }),
+          callback = apply_theme,
+        })
       end,
     },
     'tpope/vim-sleuth',

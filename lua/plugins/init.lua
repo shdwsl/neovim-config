@@ -1,6 +1,6 @@
 return {
   require 'plugins.autopairs',
-  require 'plugins.ai',
+  -- require 'plugins.ai',
   require 'plugins.neo-tree',
   require 'plugins.gitsigns',
   require 'plugins.lazygit',
