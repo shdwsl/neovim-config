@@ -113,30 +113,6 @@ else
       name = 'catppuccin',
       priority = 1000,
       config = function()
-        local function detect_background()
-          local colorfgbg = vim.env.COLORFGBG
-          if colorfgbg then
-            local bg = tonumber(colorfgbg:match('.*;(%d+)$'))
-            if bg then
-              return bg < 7 and 'dark' or 'light'
-            end
-          end
-
-          if vim.fn.has 'macunix' == 1 then
-            local appearance = vim.fn.system { 'defaults', 'read', '-g', 'AppleInterfaceStyle' }
-            if vim.v.shell_error == 0 and appearance:match 'Dark' then
-              return 'dark'
-            end
-          end
-
-          return 'light'
-        end
-
-        local function apply_theme()
-          vim.o.background = detect_background()
-          vim.cmd.colorscheme 'catppuccin'
-        end
-
         require('catppuccin').setup {
           background = {
             light = 'latte',
@@ -157,12 +133,17 @@ else
           },
         }
 
-        apply_theme()
+        vim.cmd.colorscheme 'catppuccin'
 
-        vim.api.nvim_create_autocmd({ 'FocusGained', 'TermEnter' }, {
-          desc = 'Sync colorscheme with terminal or macOS appearance',
+        -- Neovim 0.10+ queries the terminal background color (OSC 11) and sets
+        -- 'background' automatically; re-apply the colorscheme when it changes.
+        vim.api.nvim_create_autocmd('OptionSet', {
+          pattern = 'background',
+          desc = 'Sync colorscheme with terminal background',
           group = vim.api.nvim_create_augroup('nvim-config-sync-appearance', { clear = true }),
-          callback = apply_theme,
+          callback = function()
+            vim.cmd.colorscheme 'catppuccin'
+          end,
         })
       end,
     },
