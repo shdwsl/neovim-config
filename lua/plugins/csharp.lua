@@ -84,114 +84,38 @@ return {
     end,
   },
 
-  -- Debugging: netcoredbg adapter + C# launch/attach configurations.
+  -- C# debug configurations, registered when the shared dap core
+  -- (lua/plugins/debug.lua) loads. The `coreclr` adapter (netcoredbg)
+  -- is set up there via mason-nvim-dap.
   {
     'mfussenegger/nvim-dap',
-    dependencies = {
-      'rcarriga/nvim-dap-ui',
-      'nvim-neotest/nvim-nio',
-      'williamboman/mason.nvim',
-      'jay-babu/mason-nvim-dap.nvim',
-    },
-    keys = {
-      {
-        '<F5>',
-        function()
-          require('dap').continue()
-        end,
-        desc = 'Debug: Start/Continue',
-      },
-      {
-        '<F1>',
-        function()
-          require('dap').step_into()
-        end,
-        desc = 'Debug: Step Into',
-      },
-      {
-        '<F2>',
-        function()
-          require('dap').step_over()
-        end,
-        desc = 'Debug: Step Over',
-      },
-      {
-        '<F3>',
-        function()
-          require('dap').step_out()
-        end,
-        desc = 'Debug: Step Out',
-      },
-      {
-        '<leader>b',
-        function()
-          require('dap').toggle_breakpoint()
-        end,
-        desc = 'Debug: Toggle Breakpoint',
-      },
-      {
-        '<leader>B',
-        function()
-          require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-        end,
-        desc = 'Debug: Set Breakpoint',
-      },
-      {
-        '<F7>',
-        function()
-          require('dapui').toggle()
-        end,
-        desc = 'Debug: See last session result',
-      },
-    },
-    config = function()
-      local dap = require 'dap'
-      local dapui = require 'dapui'
+    init = function()
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'LazyLoad',
+        group = vim.api.nvim_create_augroup('nvim-config-csharp-dap', { clear = true }),
+        callback = function(ev)
+          if ev.data ~= 'nvim-dap' then
+            return
+          end
 
-      dapui.setup {
-        icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-        controls = {
-          icons = {
-            pause = '⏸',
-            play = '▶',
-            step_into = '⏎',
-            step_over = '⏭',
-            step_out = '⏮',
-            step_back = 'b',
-            run_last = '▶▶',
-            terminate = '⏹',
-            disconnect = '⏏',
-          },
-        },
-      }
-
-      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
-      dap.listeners.before.event_terminated['dapui_config'] = dapui.close
-      dap.listeners.before.event_exited['dapui_config'] = dapui.close
-
-      -- Registers the `coreclr` adapter from mason's netcoredbg.
-      require('mason-nvim-dap').setup {
-        automatic_installation = true,
-        ensure_installed = { 'netcoredbg' },
-        handlers = {},
-      }
-
-      dap.configurations.cs = {
-        {
-          type = 'coreclr',
-          name = 'Launch .NET app',
-          request = 'launch',
-          program = function()
-            return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Debug/', 'file')
-          end,
-        },
-        {
-          type = 'coreclr',
-          name = 'Attach to process',
-          request = 'attach',
-          processId = require('dap.utils').pick_process,
-        },
-      }
+          require('dap').configurations.cs = {
+            {
+              type = 'coreclr',
+              name = 'Launch .NET app',
+              request = 'launch',
+              program = function()
+                return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+              end,
+            },
+            {
+              type = 'coreclr',
+              name = 'Attach to process',
+              request = 'attach',
+              processId = require('dap.utils').pick_process,
+            },
+          }
+        end,
+      })
     end,
   },
 

@@ -8,5 +8,7 @@ return {
   require 'plugins.snacks',
   require 'plugins.treesitter-context',
   require 'plugins.toggleterm',
-  require 'plugins.csharp'
+  require 'plugins.debug',
+  require 'plugins.csharp', -- comment out to disable all C#/Unity tooling
+  require 'plugins.rust', -- comment out to disable all Rust tooling
 }

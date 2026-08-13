@@ -422,6 +422,8 @@ else
           'omnisharp',
           'netcoredbg',
           'csharpier',
+          -- Rust debugger for lua/plugins/rust.lua (rust-analyzer comes from rustup)
+          'codelldb',
           'stylua',
         })
         require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -572,7 +574,7 @@ else
       'nvim-treesitter/nvim-treesitter',
       build = ':TSUpdate',
       opts = {
-        ensure_installed = { 'bash', 'c', 'c_sharp', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+        ensure_installed = { 'bash', 'c', 'c_sharp', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'rust', 'toml', 'vim', 'vimdoc' },
 
         auto_install = true,
         highlight = {
