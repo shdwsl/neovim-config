@@ -8,5 +8,5 @@ return {
   require 'plugins.snacks',
   require 'plugins.treesitter-context',
   require 'plugins.toggleterm',
-  require 'plugins.roslyn',
+  require 'plugins.csharp'
 }
