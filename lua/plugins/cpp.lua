@@ -38,7 +38,7 @@ return {
           '--clang-tidy',
           '--completion-style=detailed',
           '--header-insertion=iwyu',
-          '--function-arg-placeholders',
+          '--function-arg-placeholders=true',
         },
         init_options = {
           usePlaceholders = true,
@@ -56,6 +56,72 @@ return {
     'Civitasv/cmake-tools.nvim',
     ft = { 'c', 'cpp', 'objc', 'objcpp', 'cuda', 'cmake' },
     dependencies = { 'nvim-lua/plenary.nvim' },
+    init = function()
+      -- Configure and build the current CMake project, expose its compilation
+      -- database to clangd, then restart clangd so diagnostics are refreshed.
+      vim.api.nvim_create_user_command('CMakeSetupLsp', function()
+        local source = vim.api.nvim_buf_get_name(0)
+        local root = vim.fs.root(source ~= '' and source or vim.fn.getcwd(), 'CMakeLists.txt')
+        if not root then
+          vim.notify('No CMakeLists.txt found', vim.log.levels.ERROR)
+          return
+        end
+
+        local build_dir = root .. '/build'
+        local compile_commands = build_dir .. '/compile_commands.json'
+        local link = root .. '/compile_commands.json'
+
+        local function run(command, on_success)
+          vim.system(command, { cwd = root, text = true }, function(result)
+            vim.schedule(function()
+              if result.code ~= 0 then
+                local output = result.stderr ~= '' and result.stderr or result.stdout
+                vim.notify(table.concat(command, ' ') .. ' failed:\n' .. vim.trim(output or ''), vim.log.levels.ERROR)
+                return
+              end
+              on_success()
+            end)
+          end)
+        end
+
+        vim.notify 'Configuring CMake project for clangd…'
+        run({
+          'cmake',
+          '-S',
+          root,
+          '-B',
+          build_dir,
+          '-DCMAKE_BUILD_TYPE=Debug',
+          '-DCMAKE_EXPORT_COMPILE_COMMANDS=ON',
+        }, function()
+          vim.notify 'Building CMake project…'
+          run({ 'cmake', '--build', build_dir }, function()
+            if not vim.uv.fs_stat(compile_commands) then
+              vim.notify('CMake did not generate compile_commands.json', vim.log.levels.ERROR)
+              return
+            end
+
+            local existing = vim.uv.fs_lstat(link)
+            if existing then
+              if existing.type == 'directory' then
+                vim.notify(link .. ' is a directory and cannot be replaced', vim.log.levels.ERROR)
+                return
+              end
+              vim.uv.fs_unlink(link)
+            end
+
+            local ok, err = vim.uv.fs_symlink(compile_commands, link)
+            if not ok then
+              vim.notify('Could not link compile_commands.json: ' .. (err or 'unknown error'), vim.log.levels.ERROR)
+              return
+            end
+
+            vim.cmd 'lsp restart clangd'
+            vim.notify 'CMake build complete; clangd restarted'
+          end)
+        end)
+      end, { desc = 'Configure/build CMake and refresh clangd' })
+    end,
     opts = {},
   },
 

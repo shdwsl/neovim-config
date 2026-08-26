@@ -338,6 +338,18 @@ else
         { 'Issafalcon/lsp-overloads.nvim' },
       },
       config = function()
+        -- Nvim 0.12 provides the native `:lsp` command, which makes
+        -- nvim-lspconfig skip its legacy LspInfo/LspLog aliases. Keep the
+        -- useful inspection commands available across Nvim versions.
+        if vim.fn.exists ':LspLog' == 0 then
+          vim.api.nvim_create_user_command('LspLog', function()
+            vim.cmd.tabnew(vim.fn.fnameescape(vim.lsp.log.get_filename()))
+          end, { desc = 'Open the Nvim LSP client log' })
+        end
+        if vim.fn.exists ':LspInfo' == 0 then
+          vim.api.nvim_create_user_command('LspInfo', 'checkhealth vim.lsp', { desc = 'Show LSP health and clients' })
+        end
+
         vim.api.nvim_create_autocmd('LspAttach', {
           group = vim.api.nvim_create_augroup('nvim-config-lsp-attach', { clear = true }),
           callback = function(event)
