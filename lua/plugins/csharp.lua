@@ -4,8 +4,7 @@
 -- comment out `require 'plugins.csharp'` in lua/plugins/init.lua.
 --
 -- Notes:
---   * Tools (omnisharp, netcoredbg, csharpier) are auto-installed via mason
---     (see ensure_installed in init.lua).
+--   * Tools (omnisharp, netcoredbg, csharpier) are auto-installed via mason.
 --   * For Unity: set Unity's external editor to Neovim and click
 --     "Regenerate project files" (Edit > Preferences > External Tools) so the
 --     .sln/.csproj files OmniSharp needs are generated.
@@ -13,6 +12,16 @@
 --     the Mono runtime, so the editor itself cannot be debugged with netcoredbg.
 
 return {
+  -- Keep C# tools tied to this module so disabling it also stops Mason from
+  -- installing them.
+  {
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    opts = function(_, opts)
+      opts.ensure_installed = opts.ensure_installed or {}
+      vim.list_extend(opts.ensure_installed, { 'omnisharp', 'netcoredbg', 'csharpier' })
+    end,
+  },
+
   -- Go to definition into decompiled sources (Unity APIs, .NET BCL) instead of
   -- metadata stubs, plus better references/implementations via Telescope.
   {

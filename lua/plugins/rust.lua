@@ -7,13 +7,23 @@
 --   sudo pacman -S rustup
 --   rustup default stable
 --   rustup component add rust-analyzer clippy rustfmt
--- The debugger (codelldb) is auto-installed via mason (see init.lua);
+-- The debugger (codelldb) is auto-installed via mason by this module;
 -- the dap core lives in lua/plugins/debug.lua.
 --
 -- NOTE: do NOT install rust-analyzer via mason -- rustaceanvim spawns the
 -- rustup-provided one itself; a mason copy would attach a duplicate client.
 
 return {
+  -- Keep the Rust debugger tied to this module so disabling it also stops
+  -- Mason from installing it. rust-analyzer still comes from rustup.
+  {
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    opts = function(_, opts)
+      opts.ensure_installed = opts.ensure_installed or {}
+      vim.list_extend(opts.ensure_installed, { 'codelldb' })
+    end,
+  },
+
   -- rust-analyzer on steroids: LSP, extra commands, DAP integration.
   -- `:RustLsp <tab>` gives you: runnables, debuggables, expandMacro,
   -- rebuildProcMacros, explainError, renderDiagnostic, openCargo, ...

@@ -308,7 +308,18 @@ else
 
         { 'williamboman/mason.nvim', config = true },
         'williamboman/mason-lspconfig.nvim',
-        'WhoIsSethDaniel/mason-tool-installer.nvim',
+        {
+          'WhoIsSethDaniel/mason-tool-installer.nvim',
+          opts = {
+            ensure_installed = {
+              'taplo',
+              'yamlls',
+              'jsonls',
+              'lua_ls',
+              'stylua',
+            },
+          },
+        },
 
         { 'j-hui/fidget.nvim', opts = {} },
 
@@ -394,6 +405,23 @@ else
 
         local servers = {
 
+          -- TOML (schemas/validation via its built-in SchemaStore catalog)
+          taplo = {},
+
+          -- YAML (schemas via schemastore.nvim, same as jsonls)
+          yamlls = {
+            settings = {
+              yaml = {
+                -- disable yamlls' built-in store, use schemastore.nvim instead
+                schemaStore = { enable = false, url = '' },
+                schemas = require('schemastore').yaml.schemas(),
+                validate = true,
+                hover = true,
+                completion = true,
+              },
+            },
+          },
+
           jsonls = {
             settings = {
               json = {
@@ -416,27 +444,15 @@ else
 
         require('mason').setup()
 
-        local ensure_installed = vim.tbl_keys(servers or {})
-        vim.list_extend(ensure_installed, {
-          -- C# tooling for lua/plugins/csharp.lua
-          'omnisharp',
-          'netcoredbg',
-          'csharpier',
-          -- Rust debugger for lua/plugins/rust.lua (rust-analyzer comes from rustup)
-          'codelldb',
-          'stylua',
-        })
-        require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+        -- mason-lspconfig v2 has no `handlers`; it auto-enables mason-installed
+        -- servers instead. Layer cmp capabilities on every server, then apply
+        -- per-server settings on top of the nvim-lspconfig defaults.
+        vim.lsp.config('*', { capabilities = capabilities })
+        for server_name, server in pairs(servers) do
+          vim.lsp.config(server_name, server)
+        end
 
-        require('mason-lspconfig').setup {
-          handlers = {
-            function(server_name)
-              local server = servers[server_name] or {}
-              server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-              require('lspconfig')[server_name].setup(server)
-            end,
-          },
-        }
+        require('mason-lspconfig').setup()
       end,
     },
 
@@ -574,7 +590,24 @@ else
       'nvim-treesitter/nvim-treesitter',
       build = ':TSUpdate',
       opts = {
-        ensure_installed = { 'bash', 'c', 'c_sharp', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'rust', 'toml', 'vim', 'vimdoc' },
+        ensure_installed = {
+          'bash',
+          'c',
+          'cpp',
+          'c_sharp',
+          'diff',
+          'html',
+          'lua',
+          'luadoc',
+          'markdown',
+          'markdown_inline',
+          'query',
+          'rust',
+          'toml',
+          'vim',
+          'vimdoc',
+          'yaml',
+        },
 
         auto_install = true,
         highlight = {

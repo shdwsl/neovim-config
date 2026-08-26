@@ -1,7 +1,7 @@
 -- debug.lua
 --
--- Shared debugging core (DAP). Debug adapters are installed via mason
--- (see ensure_installed in init.lua) and registered by mason-nvim-dap.
+-- Shared debugging core (DAP). Debug adapters are installed via mason by the
+-- language modules that need them and registered by mason-nvim-dap.
 -- Language-specific debug configurations live in the language modules
 -- (e.g. C# configurations in lua/plugins/csharp.lua); Rust debugging is
 -- handled by rustaceanvim (lua/plugins/rust.lua).
