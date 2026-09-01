@@ -4,96 +4,80 @@
 -- comment out `require 'plugins.csharp'` in lua/plugins/init.lua.
 --
 -- Notes:
---   * Tools (omnisharp, netcoredbg, csharpier) are auto-installed via mason.
---   * For Unity: set Unity's external editor to Neovim and click
---     "Regenerate project files" (Edit > Preferences > External Tools) so the
---     .sln/.csproj files OmniSharp needs are generated.
+--   * Tools (Roslyn, netcoredbg, csharpier) are auto-installed via Mason.
+--   * For Unity: set Unity's external editor and regenerate project files so
+--     the .sln/.csproj files Roslyn needs are up to date.
 --   * netcoredbg debugs plain .NET (CoreCLR) apps. The Unity editor runs on
---     the Mono runtime, so the editor itself cannot be debugged with netcoredbg.
+--     the Mono runtime, so the editor itself cannot be debugged with it.
 
 return {
   -- Keep C# tools tied to this module so disabling it also stops Mason from
-  -- installing them.
+  -- installing them. `roslyn-language-server` is the official Mason package.
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
-      vim.list_extend(opts.ensure_installed, { 'omnisharp', 'netcoredbg', 'csharpier' })
+      vim.list_extend(opts.ensure_installed, { 'roslyn-language-server', 'netcoredbg', 'csharpier' })
     end,
   },
 
-  -- Go to definition into decompiled sources (Unity APIs, .NET BCL) instead of
-  -- metadata stubs, plus better references/implementations via Telescope.
+  -- Modern Roslyn language server, matching the server architecture used by
+  -- the VS Code C# extension. roslyn.nvim adds solution selection, generated
+  -- source/decompiled-file support, and correct project initialization.
   {
-    'Hoffs/omnisharp-extended-lsp.nvim',
+    'seblyng/roslyn.nvim',
     dependencies = {
       'neovim/nvim-lspconfig',
       'hrsh7th/cmp-nvim-lsp',
-      'nvim-telescope/telescope.nvim',
     },
-    config = function()
+    opts = {
+      -- Let Roslyn watch the large Unity workspace instead of registering a
+      -- large set of Neovim/libuv watchers.
+      filewatching = 'roslyn',
+      broad_search = false,
+      lock_target = false,
+    },
+    config = function(_, opts)
       local capabilities = vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), require('cmp_nvim_lsp').default_capabilities())
 
-      -- OmniSharp LSP. mason-lspconfig auto-enables mason-installed servers;
-      -- vim.lsp.config layers our settings on top of the nvim-lspconfig defaults.
-      vim.lsp.config('omnisharp', {
+      vim.lsp.config('roslyn', {
         capabilities = capabilities,
         settings = {
-          FormattingOptions = {
-            EnableEditorConfigSupport = true,
-            OrganizeImports = true,
+          -- Analyze open documents instead of retaining diagnostics and
+          -- analyzer state for every generated Unity project.
+          ['csharp|background_analysis'] = {
+            dotnet_analyzer_diagnostics_scope = 'openFiles',
+            dotnet_compiler_diagnostics_scope = 'openFiles',
           },
-          MsBuild = {
-            LoadProjectsOnDemand = false,
+          ['csharp|completion'] = {
+            dotnet_show_completion_items_from_unimported_namespaces = true,
+            dotnet_show_name_completion_suggestions = true,
           },
-          RoslynExtensionsOptions = {
-            EnableAnalyzersSupport = true,
-            EnableImportCompletion = true,
-            EnableDecompilationSupport = true,
-            AnalyzeOpenDocumentsOnly = false,
+          ['csharp|inlay_hints'] = {
+            csharp_enable_inlay_hints_for_implicit_object_creation = true,
+            csharp_enable_inlay_hints_for_implicit_variable_types = true,
+            csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+            csharp_enable_inlay_hints_for_types = true,
+            dotnet_enable_inlay_hints_for_indexer_parameters = true,
+            dotnet_enable_inlay_hints_for_literal_parameters = true,
+            dotnet_enable_inlay_hints_for_object_creation_parameters = true,
+            dotnet_enable_inlay_hints_for_other_parameters = true,
+            dotnet_enable_inlay_hints_for_parameters = true,
           },
-          InlayHintsOptions = {
-            EnableForParameters = true,
-            ForLiteralParameters = true,
-            ForIndexerParameters = true,
-            ForObjectCreationParameters = true,
-            ForOtherParameters = true,
-            EnableForTypes = true,
-            ForImplicitVariableTypes = true,
-            ForLambdaParameterTypes = true,
-            ForImplicitObjectCreation = true,
+          ['csharp|symbol_search'] = {
+            dotnet_search_reference_assemblies = true,
           },
-          Sdk = {
-            IncludePrereleases = true,
+          ['csharp|formatting'] = {
+            dotnet_organize_imports_on_format = true,
           },
         },
       })
 
-      -- Route navigation through omnisharp-extended so definitions land in
-      -- decompiled source. Overrides the generic LSP maps from init.lua,
-      -- but only in buffers attached to omnisharp.
-      vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('nvim-config-omnisharp', { clear = true }),
-        callback = function(args)
-          local client = vim.lsp.get_client_by_id(args.data.client_id)
-          if not client or client.name ~= 'omnisharp' then
-            return
-          end
-
-          local map = function(keys, fn, desc)
-            vim.keymap.set('n', keys, fn, { buffer = args.buf, desc = 'LSP: ' .. desc })
-          end
-
-          map('gd', require('omnisharp_extended').telescope_lsp_definitions, '[G]oto [D]efinition (decompiled)')
-          map('gr', require('omnisharp_extended').telescope_lsp_references, '[G]oto [R]eferences')
-          map('gI', require('omnisharp_extended').telescope_lsp_implementation, '[G]oto [I]mplementation')
-          map('<leader>D', require('omnisharp_extended').telescope_lsp_type_definition, 'Type [D]efinition')
-        end,
-      })
+      require('roslyn').setup(opts)
     end,
   },
 
-  -- C# debug configurations, registered when the shared dap core
+  -- C# debug configurations, registered when the shared DAP core
   -- (lua/plugins/debug.lua) loads. The `coreclr` adapter (netcoredbg)
   -- is set up there via mason-nvim-dap.
   {
@@ -135,7 +119,10 @@ return {
     dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
     cmd = 'Dotnet',
     opts = {
-      -- dap configurations are defined in the nvim-dap spec above
+      -- roslyn.nvim owns the language server; prevent easy-dotnet from
+      -- starting a duplicate Roslyn client.
+      lsp = { enabled = false },
+      -- DAP configurations are defined in the nvim-dap spec above.
       debugger = { auto_register_dap = false },
     },
   },

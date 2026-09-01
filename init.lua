@@ -464,7 +464,12 @@ else
           vim.lsp.config(server_name, server)
         end
 
-        require('mason-lspconfig').setup()
+        require('mason-lspconfig').setup {
+          -- roslyn.nvim owns this server and performs the required solution/open
+          -- handshake. Never attach a generic Roslyn or legacy OmniSharp client
+          -- alongside it, even if either Mason package is installed manually.
+          automatic_enable = { exclude = { 'roslyn_ls', 'omnisharp' } },
+        }
       end,
     },
 
@@ -600,9 +605,11 @@ else
     },
     {
       'nvim-treesitter/nvim-treesitter',
+      lazy = false,
       build = ':TSUpdate',
-      opts = {
-        ensure_installed = {
+      config = function()
+        local treesitter = require 'nvim-treesitter'
+        local parsers = {
           'bash',
           'c',
           'cpp',
@@ -619,20 +626,22 @@ else
           'vim',
           'vimdoc',
           'yaml',
-        },
+        }
 
-        auto_install = true,
-        highlight = {
-          enable = true,
+        -- nvim-treesitter's 0.12 rewrite no longer accepts the old
+        -- ensure_installed/highlight modules. Install parsers with its new API
+        -- and enable Neovim's native Tree-sitter highlighting per filetype.
+        treesitter.setup()
+        treesitter.install(parsers)
 
-          additional_vim_regex_highlighting = { 'ruby' },
-        },
-        indent = { enable = true, disable = { 'ruby' } },
-      },
-      config = function(_, opts)
-        require('nvim-treesitter.install').prefer_git = true
-
-        require('nvim-treesitter').setup(opts)
+        vim.api.nvim_create_autocmd('FileType', {
+          pattern = { 'bash', 'c', 'cpp', 'cs', 'diff', 'html', 'lua', 'markdown', 'rust', 'toml', 'vim', 'yaml' },
+          group = vim.api.nvim_create_augroup('nvim-config-treesitter', { clear = true }),
+          callback = function(args)
+            pcall(vim.treesitter.start, args.buf)
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end,
+        })
       end,
     },
     require 'plugins',
