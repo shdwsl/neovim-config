@@ -10,6 +10,6 @@ return {
   require 'plugins.toggleterm',
   require 'plugins.debug',
   require 'plugins.csharp', -- comment out to disable all C#/Unity tooling
-  require 'plugins.cpp', -- comment out to disable all C/C++ tooling
-  require 'plugins.rust', -- comment out to disable all Rust tooling
+  -- require 'plugins.cpp', -- comment out to disable all C/C++ tooling
+  -- require 'plugins.rust', -- comment out to disable all Rust tooling
 }
